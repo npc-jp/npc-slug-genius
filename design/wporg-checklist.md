@@ -199,7 +199,7 @@ add_action( 'admin_notices', function() {
  * Plugin Name: NPC Slug Genius
  * Plugin URI: https://github.com/npc-jp/npc-slug-genius
  * Description: Automatically generates SEO-optimized English URL slugs from Japanese post titles using AI. BYOK (Bring Your Own Key) with support for Claude, OpenAI, and Gemini.
- * Version: 0.1.0
+ * Version: 1.0.0
  * Requires at least: 5.0
  * Requires PHP: 7.4
  * Author: npc
@@ -293,7 +293,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 - [ ] SVN リポジトリにアクセス: `https://plugins.svn.wordpress.org/npc-slug-genius/`
 - [ ] `trunk/` にソース配置
-- [ ] `tags/0.1.0/` でタグ打ち
+- [ ] `tags/1.0.0/` でタグ打ち
 - [ ] `assets/` に スクリーンショット・banner・icon を配置
 - [ ] `svn commit` → WP.orgプラグインページに反映（数分後）
 

@@ -40,8 +40,8 @@ if ( '' !== $api_key ) {
                     <td>
                         <select id="npc-slug-genius-provider" name="<?php echo esc_attr( NPC_Slug_Genius::OPTION_PROVIDER ); ?>">
                             <option value="claude" <?php selected( $provider, 'claude' ); ?>><?php echo esc_html__( 'Anthropic Claude', 'npc-slug-genius' ); ?></option>
-                            <option value="openai" disabled><?php echo esc_html__( 'OpenAI ChatGPT (coming in v0.2)', 'npc-slug-genius' ); ?></option>
-                            <option value="gemini" disabled><?php echo esc_html__( 'Google Gemini (coming in v0.3)', 'npc-slug-genius' ); ?></option>
+                            <option value="openai" disabled><?php echo esc_html__( 'OpenAI ChatGPT (coming in v1.1)', 'npc-slug-genius' ); ?></option>
+                            <option value="gemini" disabled><?php echo esc_html__( 'Google Gemini (coming in v1.2)', 'npc-slug-genius' ); ?></option>
                         </select>
                         <p class="description">
                             <?php echo esc_html__( 'Choose which AI provider to use for slug generation. More providers coming soon.', 'npc-slug-genius' ); ?>

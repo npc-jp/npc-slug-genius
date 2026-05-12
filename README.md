@@ -1,6 +1,6 @@
 # NPC Slug Genius
 
-[![Plugin Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/npc-jp/npc-slug-genius)
+[![Plugin Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/npc-jp/npc-slug-genius)
 [![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-21759b.svg)](https://wordpress.org)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4.svg)](https://www.php.net)
 [![License](https://img.shields.io/badge/license-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -62,10 +62,10 @@ Each slug generation uses Claude Haiku (the fastest, cheapest model), costing ro
 
 ## Roadmap
 
-- **v0.1** (current): Anthropic Claude support
-- **v0.2** (planned): Add OpenAI ChatGPT support + OpenAI-compatible endpoints (DeepSeek, Mistral, Ollama)
-- **v0.3** (planned): Add Google Gemini support
-- **v0.4** (planned): Gutenberg sidebar preview + bulk re-generate for existing posts
+- **v1.0** (current): Anthropic Claude support
+- **v1.1** (planned): Add OpenAI ChatGPT support + OpenAI-compatible endpoints (DeepSeek, Mistral, Ollama)
+- **v1.2** (planned): Add Google Gemini support
+- **v1.3** (planned): Gutenberg sidebar preview + bulk re-generate for existing posts
 
 ## Architecture
 

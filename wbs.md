@@ -15,7 +15,7 @@
 | T0-01 | Few-shot例示リスト作成（30本） | スラッグ生成の品質の核。「翻訳」でなく「SEO最適化」の基準を言語化する | `prompts/few-shot-examples.txt`（タイトル→スラッグ 30ペア） | 1.0d | - |
 | T0-02 | プロンプトテンプレート設計 | APIへ送るシステムプロンプト + ユーザープロンプトを確定する | `prompts/system-prompt-v1.txt` | 0.5d | T0-01 |
 | T0-03 | プロンプト動作検証（Claude Haiku直接テスト） | 設計したプロンプトがHaikuで想定通りのスラッグを返すか確認する。Few-shot例示30本中25本以上が許容範囲のスラッグになることをゲートとする | テスト記録（`prompts/test-results.md`）。合格なら確定・不合格ならT0-01/T0-02に差し戻し | 0.5d | T0-02 |
-| T0-04 | クラス構成図の確定（**Provider Adapter契約含む**） | 実装Phase 1で迷わないよう責務分割を事前に決める。npc-wp-healthcheckのシングルトン+includesクラス分割パターンを踏襲。**`IProvider` インターフェース（`generate_slug( $title, $context ): string\|WP_Error` 契約）を最初に確定し、ClaudeAdapter/OpenAIAdapter/GeminiAdapterが共通実装する設計を図示。MVPはClaudeAdapterのみ実装するが、契約定義はv0.2/v0.3を見据えて完成させる** | `design/class-diagram.md`（クラス名・ファイル名・責務の一覧 + Provider Adapter契約定義） | 1.0d | - |
+| T0-04 | クラス構成図の確定（**Provider Adapter契約含む**） | 実装Phase 1で迷わないよう責務分割を事前に決める。npc-wp-healthcheckのシングルトン+includesクラス分割パターンを踏襲。**`IProvider` インターフェース（`generate_slug( $title, $context ): string\|WP_Error` 契約）を最初に確定し、ClaudeAdapter/OpenAIAdapter/GeminiAdapterが共通実装する設計を図示。MVPはClaudeAdapterのみ実装するが、契約定義はv0.2/v1.2を見据えて完成させる** | `design/class-diagram.md`（クラス名・ファイル名・責務の一覧 + Provider Adapter契約定義） | 1.0d | - |
 | T0-05 | WP.org審査対策方針の確認と適用チェックリスト作成 | npc-acf-manual-generatorのPended教訓（早期サニタイズ・英語UI・admin_notices限定・load_plugin_textdomain削除）をPhase 1の実装ルールとして文書化する | `design/wporg-checklist.md` | 0.5d | - |
 | T0-06 | Phase 0バッファ | 検証差し戻し・追加例示・設計見直し吸収用 | - | 0.5d | T0-01〜T0-05 |
 
@@ -36,7 +36,7 @@
 | ID | タスク | 目的 | 成果物 | 想定時間 | 依存 |
 |---|---|---|---|---|---|
 | T1-01 | プラグイン骨格の作成 | ファイル/ディレクトリ構造、定数定義、シングルトンMainクラスの起動フローを確立する。npc-wp-healthcheckの構造をベースに流用 | `npc-slug-genius.php`（ヘッダー・定数・クラスロード・activation hook）、ディレクトリ構造（includes/ languages/ assets/） | 0.5d | T0-04 |
-| T1-02 | ClaudeAdapter実装（Provider契約に準拠） | `wp_remote_post()` でAnthropic APIを呼び出すアダプタクラス。`IProvider` インターフェースを実装。npc-wp-healthcheck `class-ai-reporter.php` のAPIコール部分（api_url・headers・body構造）をほぼそのまま流用し、モデルをHaikuに変更。**v0.2でOpenAIAdapter / v0.3でGeminiAdapterを追加する際に既存ファイルを変更せず追加のみで対応できる構造にする** | `includes/providers/interface-provider.php`（契約定義） + `includes/providers/class-claude-adapter.php`（`generate_slug( $title )` メソッド、WP_Error返却パターン） | 1.0d | T1-01, T0-04 |
+| T1-02 | ClaudeAdapter実装（Provider契約に準拠） | `wp_remote_post()` でAnthropic APIを呼び出すアダプタクラス。`IProvider` インターフェースを実装。npc-wp-healthcheck `class-ai-reporter.php` のAPIコール部分（api_url・headers・body構造）をほぼそのまま流用し、モデルをHaikuに変更。**v1.1でOpenAIAdapter / v1.2でGeminiAdapterを追加する際に既存ファイルを変更せず追加のみで対応できる構造にする** | `includes/providers/interface-provider.php`（契約定義） + `includes/providers/class-claude-adapter.php`（`generate_slug( $title )` メソッド、WP_Error返却パターン） | 1.0d | T1-01, T0-04 |
 | T1-03 | APIキー設定画面の実装（M-03） | 管理画面 > 設定 > NPC Slug Genius でAPIキー入力・DB保存・マスク表示。設定ページUIはnpc-acf-manual-generatorの管理画面パターンを踏襲。admin_noticesの表示は自プラグインのページのみに限定（WP.org審査対策） | `includes/class-settings-page.php`、`templates/settings.php`、`get_option('npc_slug_genius_api_key')` | 1.0d | T1-01 |
 | T1-04 | 対象投稿タイプ選択機能（M-06） | 設定画面に投稿タイプのチェックボックス一覧を追加。デフォルトはpost/page。選択状態をDB保存 | 設定画面に投稿タイプ選択UIを追加（T1-03に統合）、`get_option('npc_slug_genius_post_types', ['post','page'])` | 0.5d | T1-03 |
 | T1-05 | save_postフックとスラッグ自動生成コアの実装（M-01・M-02） | 保存時にClaudeを呼んでスラッグを生成する中核ロジック。無限ループ回避（`remove_action`でフック一時解除 + `wp_update_post`）、対象投稿タイプ判定、APIキー未設定チェックを含む | `includes/class-slug-generator.php`（`on_save_post()` ハンドラ、スラッグ正規表現後処理を含む） | 1.0d | T1-02, T1-04 |
@@ -94,7 +94,7 @@ Phase 2審査待ち期間（T2-04）と並行して進める。審査結果に�
 
 ---
 
-## Phase 4: v0.2 OpenAI（ChatGPT）追加（概要レベル）
+## Phase 4: v1.1 OpenAI（ChatGPT）追加（概要レベル）
 
 Phase 3完了後 or 並行。Provider Adapter契約が確定済みなので追加コストは小さい。
 
@@ -109,7 +109,7 @@ Phase 3完了後 or 並行。Provider Adapter契約が確定済みなので追�
 
 ---
 
-## Phase 5: v0.3 Gemini追加（概要レベル）
+## Phase 5: v1.2 Gemini追加（概要レベル）
 
 Phase 4と同じ構造。Geminiは無料枠が太いので一般ユーザー獲得が主目的。
 

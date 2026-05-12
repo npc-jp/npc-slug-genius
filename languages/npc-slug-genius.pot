@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: NPC Slug Genius 0.1.0\n"
+"Project-Id-Version: NPC Slug Genius 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-12 17:00+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -55,11 +55,11 @@ msgid "Anthropic Claude"
 msgstr ""
 
 #: templates/settings.php:43
-msgid "OpenAI ChatGPT (coming in v0.2)"
+msgid "OpenAI ChatGPT (coming in v1.1)"
 msgstr ""
 
 #: templates/settings.php:44
-msgid "Google Gemini (coming in v0.3)"
+msgid "Google Gemini (coming in v1.2)"
 msgstr ""
 
 #: templates/settings.php:47

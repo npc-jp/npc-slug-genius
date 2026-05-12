@@ -10,7 +10,7 @@
 
 1. **シングルトンMainクラス**: プラグイン全体のライフサイクル管理。`get_instance()` でアクセス
 2. **責務分離**: 各クラスは単一責任。設定画面・スラッグ生成・APIアダプタを完全分離
-3. **Provider Adapter パターン**: v0.1=Claude単体 / v0.2=OpenAI追加 / v0.3=Gemini追加 をファイル追加のみで実現
+3. **Provider Adapter パターン**: v1.0=Claude単体 / v1.1=OpenAI追加 / v1.2=Gemini追加 をファイル追加のみで実現
 4. **依存性注入**: SlugGenerator は IProvider 実装クラスを受け取る（Provider切替が容易）
 5. **WP標準フックのみ**: カスタムイベントは使わず `save_post` `admin_init` `admin_menu` 等で完結
 
@@ -32,8 +32,8 @@ npc-slug-genius/
 │   └── providers/
 │       ├── interface-provider.php    # IProvider 契約定義
 │       ├── class-claude-adapter.php  # Anthropic Claude（MVP）
-│       ├── class-openai-adapter.php  # OpenAI ChatGPT（v0.2）
-│       └── class-gemini-adapter.php  # Google Gemini（v0.3）
+│       ├── class-openai-adapter.php  # OpenAI ChatGPT（v1.1）
+│       └── class-gemini-adapter.php  # Google Gemini（v1.2）
 ├── prompts/
 │   ├── system-prompt-v1.txt          # システムプロンプト本体
 │   └── few-shot-examples.json        # Few-shot 30本+Anti-patterns 5本
@@ -152,25 +152,25 @@ interface NPC_Slug_Genius_Provider {
 
 ---
 
-### 3.4 NPC_Slug_Genius_OpenAI_Adapter（v0.2 / Phase 4）
+### 3.4 NPC_Slug_Genius_OpenAI_Adapter（v1.1 / Phase 4）
 
 **ファイル**: `includes/providers/class-openai-adapter.php`
 **責務**: OpenAI Chat Completions API（および OpenAI互換エンドポイント）への呼び出し
 
-**v0.1時点では実装しない**が、契約定義（IProvider）には準拠する設計を確定。
+**v1.0時点では実装しない**が、契約定義（IProvider）には準拠する設計を確定。
 
-**追加パラメータ（v0.2実装時）**:
+**追加パラメータ（v1.1実装時）**:
 - `base_url`: デフォルト `https://api.openai.com/v1`、設定画面でカスタマイズ可能
 - `model`: デフォルト `gpt-4o-mini`、設定画面で変更可能（OpenAI互換エンドポイント想定）
 
 ---
 
-### 3.5 NPC_Slug_Genius_Gemini_Adapter（v0.3 / Phase 5）
+### 3.5 NPC_Slug_Genius_Gemini_Adapter（v1.2 / Phase 5）
 
 **ファイル**: `includes/providers/class-gemini-adapter.php`
 **責務**: Google Generative AI API への呼び出し
 
-**v0.1時点では実装しない**が、契約定義（IProvider）には準拠。
+**v1.0時点では実装しない**が、契約定義（IProvider）には準拠。
 
 ---
 
@@ -188,10 +188,10 @@ interface NPC_Slug_Genius_Provider {
 | `sanitize_post_types( $input )` | 投稿タイプ配列のサニタイズ（`array_map( 'sanitize_key', ... )` + `post_type_exists()` 検証） |
 | `sanitize_provider( $input )` | プロバイダ選択値のサニタイズ（許容値リストでホワイトリスト検証） |
 
-**設定項目（v0.1）**:
+**設定項目（v1.0）**:
 | キー（DB） | 内容 |
 |---|---|
-| `npc_slug_genius_provider` | 使用プロバイダ識別子（v0.1は `'claude'` 固定だがUIは将来拡張前提） |
+| `npc_slug_genius_provider` | 使用プロバイダ識別子（v1.0は `'claude'` 固定だがUIは将来拡張前提） |
 | `npc_slug_genius_api_key_claude` | Claude APIキー |
 | `npc_slug_genius_post_types` | 対象投稿タイプ配列 |
 
@@ -334,7 +334,7 @@ interface NPC_Slug_Genius_Provider {
 
 ---
 
-## 5. v0.2/v0.3 でのプロバイダ追加手順
+## 5. v1.1/v1.2 でのプロバイダ追加手順
 
 Provider Adapter契約を確定済みなので、新規プロバイダ追加は以下のみ:
 

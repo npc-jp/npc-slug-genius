@@ -4,7 +4,7 @@ Tags: slug, seo, japanese, permalink, ai
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,8 +33,8 @@ NPC Slug Genius takes a different approach: it uses AI to think about how an Eng
 
 **Coming soon:**
 
-* OpenAI ChatGPT (v0.2)
-* Google Gemini (v0.3)
+* OpenAI ChatGPT (v1.1)
+* Google Gemini (v1.2)
 
 **Getting started:**
 
@@ -88,7 +88,7 @@ No personally identifiable information is collected or transmitted by this plugi
 
 == Changelog ==
 
-= 0.1.0 =
+= 1.0.0 =
 * Initial release.
 * Anthropic Claude provider (Haiku model).
 * Settings page with API key, provider selection (Claude only for now), and target post types.
@@ -98,5 +98,5 @@ No personally identifiable information is collected or transmitted by this plugi
 
 == Upgrade Notice ==
 
-= 0.1.0 =
+= 1.0.0 =
 First release.
