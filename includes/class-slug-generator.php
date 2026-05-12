@@ -70,7 +70,39 @@ class NPC_Slug_Genius_Slug_Generator {
         if ( ! in_array( $post->post_type, $targets, true ) ) {
             return false;
         }
+        if ( ! $this->is_within_activation_window( $post ) ) {
+            return false;
+        }
         return true;
+    }
+
+    /**
+     * Skip posts created before plugin activation unless user opted in.
+     * This protects existing URLs from being silently rewritten.
+     */
+    private function is_within_activation_window( $post ) {
+        if ( NPC_Slug_Genius::should_include_existing() ) {
+            return true;
+        }
+        // Use the previously stored auto-generated postmeta as an override:
+        // if this plugin already generated a slug for this post in a past save,
+        // it's safe to keep processing (e.g. title edits should regenerate).
+        $previous_auto = get_post_meta( $post->ID, NPC_Slug_Genius::META_KEY_AUTO_GENERATED, true );
+        if ( '' !== $previous_auto ) {
+            return true;
+        }
+        $activated_at = NPC_Slug_Genius::get_activated_at();
+        if ( '' === $activated_at ) {
+            // No activation time recorded (legacy install). Be safe: skip.
+            return false;
+        }
+        $post_gmt = (string) $post->post_date_gmt;
+        if ( '' === $post_gmt || '0000-00-00 00:00:00' === $post_gmt ) {
+            // Newly created post often has empty post_date_gmt at first save.
+            // Treat as "new" -> safe to process.
+            return true;
+        }
+        return strtotime( $post_gmt ) >= strtotime( $activated_at );
     }
 
     /**

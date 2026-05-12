@@ -22,6 +22,7 @@ NPC Slug Genius takes a different approach: it uses AI to think about how an Eng
 
 * Automatic SEO-optimized English slug generation on post save
 * Manual slug edits are respected and never overwritten
+* **Safe by default for existing sites**: posts created before plugin activation are skipped, so existing URLs are never rewritten unless you explicitly opt in
 * Configurable target post types
 * Safe fallback: if the API key is missing or the API call fails, the post saves normally with no error
 * BYOK (Bring Your Own Key): you control the API usage and cost
@@ -75,6 +76,10 @@ Only the post title is sent. No post content, no user data, no site metadata.
 
 Yes. Go to Settings > NPC Slug Genius and check the post types you want.
 
+= I installed this on a site with existing Japanese posts. Will their URLs change? =
+
+No, not by default. Posts created before plugin activation are skipped to protect existing URLs. If you actually want to rewrite all existing Japanese slugs to English, enable "Also process posts created before plugin activation" in the settings (warning: this will change existing URLs).
+
 == Privacy Policy ==
 
 When a post is saved, this plugin sends the post title to the AI provider you configured (currently Anthropic Claude). The post title is processed to generate an English slug and is not stored by this plugin beyond the resulting slug.
@@ -89,6 +94,7 @@ No personally identifiable information is collected or transmitted by this plugi
 * Settings page with API key, provider selection (Claude only for now), and target post types.
 * Manual slug protection.
 * Admin notice when API key is missing.
+* Safe-by-default: existing posts (created before activation) are skipped to protect existing URLs.
 
 == Upgrade Notice ==
 

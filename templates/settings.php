@@ -3,10 +3,12 @@
  * Settings page template.
  *
  * Available variables:
- * @var string $provider   Active provider id.
- * @var string $api_key    Claude API key (may be empty).
- * @var array  $post_types Currently selected post types.
- * @var array  $all_types  All public post type objects.
+ * @var string $provider         Active provider id.
+ * @var string $api_key          Claude API key (may be empty).
+ * @var array  $post_types       Currently selected post types.
+ * @var array  $all_types        All public post type objects.
+ * @var bool   $include_existing Whether to process posts created before activation.
+ * @var string $activated_at     Plugin activation timestamp (GMT mysql format).
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -113,6 +115,36 @@ if ( '' !== $api_key ) {
                         <p class="description">
                             <?php echo esc_html__( 'Slug auto-generation will run only on the selected post types.', 'npc-slug-genius' ); ?>
                         </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row"><?php echo esc_html__( 'Existing Posts', 'npc-slug-genius' ); ?></th>
+                    <td>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="<?php echo esc_attr( NPC_Slug_Genius::OPTION_INCLUDE_EXISTING ); ?>"
+                                value="1"
+                                <?php checked( $include_existing ); ?>
+                            />
+                            <?php echo esc_html__( 'Also process posts created before plugin activation', 'npc-slug-genius' ); ?>
+                        </label>
+                        <p class="description">
+                            <strong style="color:#b32d2e;"><?php echo esc_html__( 'Warning:', 'npc-slug-genius' ); ?></strong>
+                            <?php echo esc_html__( 'Enabling this will rewrite existing Japanese slugs to English on the next save. This changes existing URLs and may break inbound links and SEO. Leave this off unless you know what you are doing.', 'npc-slug-genius' ); ?>
+                        </p>
+                        <?php if ( '' !== $activated_at ) : ?>
+                            <p class="description">
+                                <?php
+                                printf(
+                                    /* translators: %s: plugin activation date/time. */
+                                    esc_html__( 'Plugin was activated on: %s (UTC). Posts created on or after this time will be processed by default.', 'npc-slug-genius' ),
+                                    esc_html( $activated_at )
+                                );
+                                ?>
+                            </p>
+                        <?php endif; ?>
                     </td>
                 </tr>
             </tbody>

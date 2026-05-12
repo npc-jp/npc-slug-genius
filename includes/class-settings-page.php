@@ -62,6 +62,21 @@ class NPC_Slug_Genius_Settings_Page {
                 'default'           => array( 'post', 'page' ),
             )
         );
+
+        register_setting(
+            'npc_slug_genius_settings',
+            NPC_Slug_Genius::OPTION_INCLUDE_EXISTING,
+            array(
+                'type'              => 'string',
+                'sanitize_callback' => array( $this, 'sanitize_boolean' ),
+                'default'           => '0',
+            )
+        );
+    }
+
+    public function sanitize_boolean( $input ) {
+        $value = is_string( $input ) ? sanitize_text_field( wp_unslash( $input ) ) : '';
+        return '1' === $value ? '1' : '0';
     }
 
     public function sanitize_provider( $input ) {
@@ -108,10 +123,12 @@ class NPC_Slug_Genius_Settings_Page {
             return;
         }
 
-        $provider     = NPC_Slug_Genius::get_active_provider_id();
-        $api_key      = NPC_Slug_Genius::get_api_key( 'claude' );
-        $post_types   = NPC_Slug_Genius::get_target_post_types();
-        $all_types    = get_post_types( array( 'public' => true ), 'objects' );
+        $provider         = NPC_Slug_Genius::get_active_provider_id();
+        $api_key          = NPC_Slug_Genius::get_api_key( 'claude' );
+        $post_types       = NPC_Slug_Genius::get_target_post_types();
+        $all_types        = get_post_types( array( 'public' => true ), 'objects' );
+        $include_existing = NPC_Slug_Genius::should_include_existing();
+        $activated_at     = NPC_Slug_Genius::get_activated_at();
 
         include NPC_SLUG_GENIUS_DIR . 'templates/settings.php';
     }

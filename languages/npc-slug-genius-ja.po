@@ -54,6 +54,21 @@ msgstr "APIキーは %s から取得できます。この欄を空のまま保�
 msgid "Delete the saved API key on save"
 msgstr "保存時にAPIキーを削除する"
 
+msgid "Existing Posts"
+msgstr "既存の投稿"
+
+msgid "Also process posts created before plugin activation"
+msgstr "プラグイン有効化前に作成された投稿も対象にする"
+
+msgid "Warning:"
+msgstr "警告:"
+
+msgid "Enabling this will rewrite existing Japanese slugs to English on the next save. This changes existing URLs and may break inbound links and SEO. Leave this off unless you know what you are doing."
+msgstr "これを有効にすると、次回保存時に既存の日本語スラッグが英語に書き換えられます。既存URLが変わるため、外部リンクやSEOに影響する可能性があります。意図して使う場合以外はオフのままにしてください。"
+
+msgid "Plugin was activated on: %s (UTC). Posts created on or after this time will be processed by default."
+msgstr "プラグイン有効化日時: %s (UTC)。デフォルトでは、この日時以降に作成された投稿のみ対象となります。"
+
 msgid "Target Post Types"
 msgstr "対象の投稿タイプ"
 

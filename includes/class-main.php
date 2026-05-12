@@ -12,6 +12,8 @@ class NPC_Slug_Genius {
     const OPTION_PROVIDER          = 'npc_slug_genius_provider';
     const OPTION_API_KEY_CLAUDE    = 'npc_slug_genius_api_key_claude';
     const OPTION_POST_TYPES        = 'npc_slug_genius_post_types';
+    const OPTION_INCLUDE_EXISTING  = 'npc_slug_genius_include_existing';
+    const OPTION_ACTIVATED_AT      = 'npc_slug_genius_activated_at';
     const META_KEY_MANUAL          = '_npc_slug_genius_manual';
     const META_KEY_AUTO_GENERATED  = '_npc_slug_genius_auto';
 
@@ -42,6 +44,11 @@ class NPC_Slug_Genius {
                 esc_html__( 'Plugin Activation Error', 'npc-slug-genius' ),
                 array( 'back_link' => true )
             );
+        }
+        // Record activation time. Posts created BEFORE this point are skipped by default
+        // to avoid breaking existing URLs. Users can opt in via the "Process existing posts" setting.
+        if ( false === get_option( self::OPTION_ACTIVATED_AT, false ) ) {
+            add_option( self::OPTION_ACTIVATED_AT, current_time( 'mysql', true ) );
         }
     }
 
@@ -103,6 +110,20 @@ class NPC_Slug_Genius {
     public static function is_ai_available() {
         $key = self::get_api_key();
         return ! empty( $key );
+    }
+
+    /**
+     * Whether the user opted in to process posts created before plugin activation.
+     */
+    public static function should_include_existing() {
+        return '1' === (string) get_option( self::OPTION_INCLUDE_EXISTING, '0' );
+    }
+
+    /**
+     * Plugin activation timestamp in GMT (mysql format). Empty string before first activation.
+     */
+    public static function get_activated_at() {
+        return (string) get_option( self::OPTION_ACTIVATED_AT, '' );
     }
 
     public static function get_active_provider() {
