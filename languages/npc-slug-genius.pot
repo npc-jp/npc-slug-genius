@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NPC Slug Genius 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-12 16:25+0900\n"
+"POT-Creation-Date: 2026-05-12 17:00+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgid "Plugin Activation Error"
 msgstr ""
 
 #: includes/class-admin-notices.php:41 includes/class-settings-page.php:24
-#: includes/class-settings-page.php:25 templates/settings.php:24
+#: includes/class-settings-page.php:25 templates/settings.php:25
 msgid "NPC Slug Genius"
 msgstr ""
 
@@ -40,105 +40,105 @@ msgstr ""
 msgid "Open settings"
 msgstr ""
 
-#: templates/settings.php:27
+#: templates/settings.php:28
 msgid ""
 "Automatically generates SEO-optimized English URL slugs from Japanese post "
 "titles using AI."
 msgstr ""
 
-#: templates/settings.php:37
+#: templates/settings.php:38
 msgid "AI Provider"
 msgstr ""
 
-#: templates/settings.php:41 includes/providers/class-claude-adapter.php:29
+#: templates/settings.php:42 includes/providers/class-claude-adapter.php:29
 msgid "Anthropic Claude"
 msgstr ""
 
-#: templates/settings.php:42
+#: templates/settings.php:43
 msgid "OpenAI ChatGPT (coming in v0.2)"
 msgstr ""
 
-#: templates/settings.php:43
+#: templates/settings.php:44
 msgid "Google Gemini (coming in v0.3)"
 msgstr ""
 
-#: templates/settings.php:46
+#: templates/settings.php:47
 msgid ""
 "Choose which AI provider to use for slug generation. More providers coming "
 "soon."
 msgstr ""
 
-#: templates/settings.php:53
+#: templates/settings.php:54
 msgid "Anthropic API Key"
 msgstr ""
 
-#: templates/settings.php:70
+#: templates/settings.php:71
 #, php-format
 msgid ""
 "Get your API key from %s. Leave this field empty to keep the current saved "
 "key unchanged."
 msgstr ""
 
-#: templates/settings.php:85
+#: templates/settings.php:86
 msgid "Delete the saved API key on save"
 msgstr ""
 
-#: templates/settings.php:93 templates/settings.php:96
+#: templates/settings.php:94 templates/settings.php:97
 msgid "Target Post Types"
 msgstr ""
 
-#: templates/settings.php:116
+#: templates/settings.php:117
 msgid "Slug auto-generation will run only on the selected post types."
 msgstr ""
 
-#: templates/settings.php:122
+#: templates/settings.php:123
 msgid "Existing Posts"
 msgstr ""
 
-#: templates/settings.php:131
+#: templates/settings.php:132
 msgid "Also process posts created before plugin activation"
 msgstr ""
 
-#: templates/settings.php:134
+#: templates/settings.php:135
 msgid "Warning:"
 msgstr ""
 
-#: templates/settings.php:135
+#: templates/settings.php:136
 msgid ""
 "Enabling this will rewrite existing Japanese slugs to English on the next "
 "save. This changes existing URLs and may break inbound links and SEO. Leave "
 "this off unless you know what you are doing."
 msgstr ""
 
-#: templates/settings.php:142
+#: templates/settings.php:143
 #, php-format
 msgid ""
-"Plugin was activated on: %s (UTC). Posts created on or after this time will "
-"be processed by default."
+"Plugin was activated on: %s. Posts created on or after this time will be "
+"processed by default."
 msgstr ""
 
-#: templates/settings.php:158
+#: templates/settings.php:159
 msgid "How it works"
 msgstr ""
 
-#: templates/settings.php:160
+#: templates/settings.php:161
 msgid ""
 "When you save a post with a Japanese title, this plugin sends the title to "
 "your chosen AI provider."
 msgstr ""
 
-#: templates/settings.php:161
+#: templates/settings.php:162
 msgid ""
 "The AI returns an SEO-optimized English slug, which is set as the post URL."
 msgstr ""
 
-#: templates/settings.php:162
+#: templates/settings.php:163
 msgid ""
 "If you manually edit the slug after that, this plugin will respect your "
 "choice and not overwrite it on subsequent saves."
 msgstr ""
 
-#: templates/settings.php:163
+#: templates/settings.php:164
 msgid ""
 "If the API key is missing or the API call fails, this plugin does nothing - "
 "the post saves as normal."

@@ -130,6 +130,13 @@ class NPC_Slug_Genius_Settings_Page {
         $include_existing = NPC_Slug_Genius::should_include_existing();
         $activated_at     = NPC_Slug_Genius::get_activated_at();
 
+        // Convert UTC-stored activation time to the site timezone for display.
+        $activated_at_local = '';
+        if ( '' !== $activated_at ) {
+            $format             = trim( get_option( 'date_format', 'Y-m-d' ) . ' ' . get_option( 'time_format', 'H:i:s' ) );
+            $activated_at_local = get_date_from_gmt( $activated_at, $format );
+        }
+
         include NPC_SLUG_GENIUS_DIR . 'templates/settings.php';
     }
 }

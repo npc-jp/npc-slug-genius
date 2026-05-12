@@ -3,12 +3,13 @@
  * Settings page template.
  *
  * Available variables:
- * @var string $provider         Active provider id.
- * @var string $api_key          Claude API key (may be empty).
- * @var array  $post_types       Currently selected post types.
- * @var array  $all_types        All public post type objects.
- * @var bool   $include_existing Whether to process posts created before activation.
- * @var string $activated_at     Plugin activation timestamp (GMT mysql format).
+ * @var string $provider           Active provider id.
+ * @var string $api_key            Claude API key (may be empty).
+ * @var array  $post_types         Currently selected post types.
+ * @var array  $all_types          All public post type objects.
+ * @var bool   $include_existing   Whether to process posts created before activation.
+ * @var string $activated_at       Plugin activation timestamp (GMT mysql format).
+ * @var string $activated_at_local Plugin activation timestamp formatted in site timezone.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -134,13 +135,13 @@ if ( '' !== $api_key ) {
                             <strong style="color:#b32d2e;"><?php echo esc_html__( 'Warning:', 'npc-slug-genius' ); ?></strong>
                             <?php echo esc_html__( 'Enabling this will rewrite existing Japanese slugs to English on the next save. This changes existing URLs and may break inbound links and SEO. Leave this off unless you know what you are doing.', 'npc-slug-genius' ); ?>
                         </p>
-                        <?php if ( '' !== $activated_at ) : ?>
+                        <?php if ( '' !== $activated_at_local ) : ?>
                             <p class="description">
                                 <?php
                                 printf(
-                                    /* translators: %s: plugin activation date/time. */
-                                    esc_html__( 'Plugin was activated on: %s (UTC). Posts created on or after this time will be processed by default.', 'npc-slug-genius' ),
-                                    esc_html( $activated_at )
+                                    /* translators: %s: plugin activation date/time formatted in site timezone. */
+                                    esc_html__( 'Plugin was activated on: %s. Posts created on or after this time will be processed by default.', 'npc-slug-genius' ),
+                                    esc_html( $activated_at_local )
                                 );
                                 ?>
                             </p>
