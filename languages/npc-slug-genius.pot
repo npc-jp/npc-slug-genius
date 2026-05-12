@@ -1,0 +1,139 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the NPC Slug Genius package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: NPC Slug Genius 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-12 15:44+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: includes/class-main.php:41
+msgid "NPC Slug Genius requires PHP 7.4 or higher."
+msgstr ""
+
+#: includes/class-main.php:42
+msgid "Plugin Activation Error"
+msgstr ""
+
+#: includes/class-admin-notices.php:41 includes/class-settings-page.php:24
+#: includes/class-settings-page.php:25 templates/settings.php:22
+msgid "NPC Slug Genius"
+msgstr ""
+
+#: includes/class-admin-notices.php:42
+msgid ""
+"API key is not configured. Slug auto-generation will not run until you set "
+"an API key."
+msgstr ""
+
+#: includes/class-admin-notices.php:43
+msgid "Open settings"
+msgstr ""
+
+#: templates/settings.php:25
+msgid ""
+"Automatically generates SEO-optimized English URL slugs from Japanese post "
+"titles using AI."
+msgstr ""
+
+#: templates/settings.php:35
+msgid "AI Provider"
+msgstr ""
+
+#: templates/settings.php:39 includes/providers/class-claude-adapter.php:29
+msgid "Anthropic Claude"
+msgstr ""
+
+#: templates/settings.php:40
+msgid "OpenAI ChatGPT (coming in v0.2)"
+msgstr ""
+
+#: templates/settings.php:41
+msgid "Google Gemini (coming in v0.3)"
+msgstr ""
+
+#: templates/settings.php:44
+msgid ""
+"Choose which AI provider to use for slug generation. More providers coming "
+"soon."
+msgstr ""
+
+#: templates/settings.php:51
+msgid "Anthropic API Key"
+msgstr ""
+
+#: templates/settings.php:68
+#, php-format
+msgid ""
+"Get your API key from %s. Leave this field empty to keep the current saved "
+"key unchanged."
+msgstr ""
+
+#: templates/settings.php:83
+msgid "Delete the saved API key on save"
+msgstr ""
+
+#: templates/settings.php:91 templates/settings.php:94
+msgid "Target Post Types"
+msgstr ""
+
+#: templates/settings.php:114
+msgid "Slug auto-generation will run only on the selected post types."
+msgstr ""
+
+#: templates/settings.php:126
+msgid "How it works"
+msgstr ""
+
+#: templates/settings.php:128
+msgid ""
+"When you save a post with a Japanese title, this plugin sends the title to "
+"your chosen AI provider."
+msgstr ""
+
+#: templates/settings.php:129
+msgid ""
+"The AI returns an SEO-optimized English slug, which is set as the post URL."
+msgstr ""
+
+#: templates/settings.php:130
+msgid ""
+"If you manually edit the slug after that, this plugin will respect your "
+"choice and not overwrite it on subsequent saves."
+msgstr ""
+
+#: templates/settings.php:131
+msgid ""
+"If the API key is missing or the API call fails, this plugin does nothing - "
+"the post saves as normal."
+msgstr ""
+
+#: includes/providers/class-claude-adapter.php:38
+msgid "Anthropic API key is not configured."
+msgstr ""
+
+#: includes/providers/class-claude-adapter.php:43
+msgid "Title is empty."
+msgstr ""
+
+#: includes/providers/class-claude-adapter.php:48
+msgid "System prompt file is missing."
+msgstr ""
+
+#: includes/providers/class-claude-adapter.php:94
+msgid "Empty response from Claude API."
+msgstr ""
+
+#: includes/providers/class-claude-adapter.php:99
+msgid "Generated slug is invalid after normalization."
+msgstr ""

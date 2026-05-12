@@ -1,0 +1,30 @@
+# Files excluded from `git archive` (and from WP.org SVN export equivalents).
+# Keep the distribution zip free of development-only files.
+
+.gitattributes      export-ignore
+.gitignore          export-ignore
+.git                export-ignore
+.github/            export-ignore
+.DS_Store           export-ignore
+
+# Development docs and planning
+design/             export-ignore
+prompts/few-shot-examples.json export-ignore
+planning.md         export-ignore
+wbs.md              export-ignore
+few-shot-examples.md export-ignore
+README.md           export-ignore
+DEPLOY.md           export-ignore
+CHANGELOG.md        export-ignore
+readme-ja.txt       export-ignore
+
+# Tests
+tests/              export-ignore
+phpunit.xml         export-ignore
+phpunit.xml.dist    export-ignore
+phpcs.xml           export-ignore
+phpcs.xml.dist      export-ignore
+
+# Build artifacts
+dist/               export-ignore
+node_modules/       export-ignore

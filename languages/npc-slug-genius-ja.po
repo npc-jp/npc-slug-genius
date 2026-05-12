@@ -1,0 +1,91 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: NPC Slug Genius 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-12 14:49+0900\n"
+"PO-Revision-Date: 2026-05-12 14:50+0900\n"
+"Last-Translator: npc <azusa-y@n-pc.jp>\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "NPC Slug Genius requires PHP 7.4 or higher."
+msgstr "NPC Slug Genius を有効化するには PHP 7.4 以上が必要です。"
+
+msgid "Plugin Activation Error"
+msgstr "プラグイン有効化エラー"
+
+msgid "NPC Slug Genius"
+msgstr "NPC スラッグ自動変換"
+
+msgid "API key is not configured. Slug auto-generation will not run until you set an API key."
+msgstr "APIキーが設定されていません。APIキーを設定するまでスラッグ自動生成は動作しません。"
+
+msgid "Open settings"
+msgstr "設定を開く"
+
+msgid "Automatically generates SEO-optimized English URL slugs from Japanese post titles using AI."
+msgstr "日本語の投稿タイトルから、AIがSEOに最適化された英語URLスラッグを自動生成します。"
+
+msgid "AI Provider"
+msgstr "AIプロバイダ"
+
+msgid "Anthropic Claude"
+msgstr "Anthropic Claude"
+
+msgid "OpenAI ChatGPT (coming in v0.2)"
+msgstr "OpenAI ChatGPT（v0.2で対応予定）"
+
+msgid "Google Gemini (coming in v0.3)"
+msgstr "Google Gemini（v0.3で対応予定）"
+
+msgid "Choose which AI provider to use for slug generation. More providers coming soon."
+msgstr "スラッグ生成に使用するAIプロバイダを選択してください。今後さらに追加予定です。"
+
+msgid "Anthropic API Key"
+msgstr "Anthropic APIキー"
+
+msgid "Get your API key from %s. Leave this field empty to keep the current saved key unchanged."
+msgstr "APIキーは %s から取得できます。この欄を空のまま保存すると、既存のAPIキーは変更されません。"
+
+msgid "Delete the saved API key on save"
+msgstr "保存時にAPIキーを削除する"
+
+msgid "Target Post Types"
+msgstr "対象の投稿タイプ"
+
+msgid "Slug auto-generation will run only on the selected post types."
+msgstr "スラッグ自動生成は、ここで選択した投稿タイプでのみ動作します。"
+
+msgid "How it works"
+msgstr "動作の仕組み"
+
+msgid "When you save a post with a Japanese title, this plugin sends the title to your chosen AI provider."
+msgstr "日本語タイトルで投稿を保存すると、選択中のAIプロバイダにタイトルが送信されます。"
+
+msgid "The AI returns an SEO-optimized English slug, which is set as the post URL."
+msgstr "AIがSEOに最適化された英語スラッグを返し、それが投稿URLとして設定されます。"
+
+msgid "If you manually edit the slug after that, this plugin will respect your choice and not overwrite it on subsequent saves."
+msgstr "その後にスラッグを手動で編集した場合、本プラグインは編集を尊重し、以降の保存で上書きしません。"
+
+msgid "If the API key is missing or the API call fails, this plugin does nothing - the post saves as normal."
+msgstr "APIキーが未設定の場合やAPI呼び出しが失敗した場合は、何も行いません。投稿は通常通り保存されます。"
+
+msgid "Anthropic API key is not configured."
+msgstr "Anthropic APIキーが設定されていません。"
+
+msgid "Title is empty."
+msgstr "タイトルが空です。"
+
+msgid "System prompt file is missing."
+msgstr "システムプロンプトファイルが見つかりません。"
+
+msgid "Empty response from Claude API."
+msgstr "Claude APIからの応答が空でした。"
+
+msgid "Generated slug is invalid after normalization."
+msgstr "生成されたスラッグが正規化後に無効な値になりました。"
