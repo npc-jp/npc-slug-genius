@@ -48,7 +48,27 @@ class NPC_Slug_Genius_Settings_Page {
             NPC_Slug_Genius::OPTION_API_KEY_CLAUDE,
             array(
                 'type'              => 'string',
-                'sanitize_callback' => array( $this, 'sanitize_api_key' ),
+                'sanitize_callback' => array( $this, 'sanitize_api_key_claude' ),
+                'default'           => '',
+            )
+        );
+
+        register_setting(
+            'npc_slug_genius_settings',
+            NPC_Slug_Genius::OPTION_API_KEY_OPENAI,
+            array(
+                'type'              => 'string',
+                'sanitize_callback' => array( $this, 'sanitize_api_key_openai' ),
+                'default'           => '',
+            )
+        );
+
+        register_setting(
+            'npc_slug_genius_settings',
+            NPC_Slug_Genius::OPTION_API_KEY_GEMINI,
+            array(
+                'type'              => 'string',
+                'sanitize_callback' => array( $this, 'sanitize_api_key_gemini' ),
                 'default'           => '',
             )
         );
@@ -80,15 +100,32 @@ class NPC_Slug_Genius_Settings_Page {
     }
 
     public function sanitize_provider( $input ) {
-        $allowed = array( 'claude' );
-        $value   = is_string( $input ) ? sanitize_key( wp_unslash( $input ) ) : '';
-        return in_array( $value, $allowed, true ) ? $value : 'claude';
+        $value = is_string( $input ) ? sanitize_key( wp_unslash( $input ) ) : '';
+        return in_array( $value, NPC_Slug_Genius::SUPPORTED_PROVIDERS, true ) ? $value : 'claude';
     }
 
-    public function sanitize_api_key( $input ) {
-        // If user explicitly requested deletion via the checkbox, return empty.
-        $delete_requested = isset( $_POST['npc_slug_genius_delete_api_key_claude'] )
-            && '1' === sanitize_text_field( wp_unslash( $_POST['npc_slug_genius_delete_api_key_claude'] ) );
+    public function sanitize_api_key_claude( $input ) {
+        return $this->sanitize_api_key_for( 'claude', $input );
+    }
+
+    public function sanitize_api_key_openai( $input ) {
+        return $this->sanitize_api_key_for( 'openai', $input );
+    }
+
+    public function sanitize_api_key_gemini( $input ) {
+        return $this->sanitize_api_key_for( 'gemini', $input );
+    }
+
+    /**
+     * Common sanitizer for provider API keys.
+     * - "Delete saved key" checkbox -> returns empty (clears the key).
+     * - Empty input             -> keeps existing key unchanged.
+     * - Non-empty input         -> stored after sanitize_text_field.
+     */
+    private function sanitize_api_key_for( $provider_id, $input ) {
+        $delete_field = 'npc_slug_genius_delete_api_key_' . $provider_id;
+        $delete_requested = isset( $_POST[ $delete_field ] )
+            && '1' === sanitize_text_field( wp_unslash( $_POST[ $delete_field ] ) );
         if ( $delete_requested ) {
             return '';
         }
@@ -99,10 +136,22 @@ class NPC_Slug_Genius_Settings_Page {
         $value = sanitize_text_field( wp_unslash( $input ) );
         if ( '' === $value ) {
             // Empty input -> keep existing key unchanged.
-            $stored = get_option( NPC_Slug_Genius::OPTION_API_KEY_CLAUDE, '' );
-            return (string) $stored;
+            $option_name = $this->option_name_for( $provider_id );
+            return (string) get_option( $option_name, '' );
         }
         return $value;
+    }
+
+    private function option_name_for( $provider_id ) {
+        switch ( $provider_id ) {
+            case 'openai':
+                return NPC_Slug_Genius::OPTION_API_KEY_OPENAI;
+            case 'gemini':
+                return NPC_Slug_Genius::OPTION_API_KEY_GEMINI;
+            case 'claude':
+            default:
+                return NPC_Slug_Genius::OPTION_API_KEY_CLAUDE;
+        }
     }
 
     public function sanitize_post_types( $input ) {
@@ -124,7 +173,9 @@ class NPC_Slug_Genius_Settings_Page {
         }
 
         $provider         = NPC_Slug_Genius::get_active_provider_id();
-        $api_key          = NPC_Slug_Genius::get_api_key( 'claude' );
+        $api_key_claude   = NPC_Slug_Genius::get_api_key( 'claude' );
+        $api_key_openai   = NPC_Slug_Genius::get_api_key( 'openai' );
+        $api_key_gemini   = NPC_Slug_Genius::get_api_key( 'gemini' );
         $post_types       = NPC_Slug_Genius::get_target_post_types();
         $all_types        = get_post_types( array( 'public' => true ), 'objects' );
         $include_existing = NPC_Slug_Genius::should_include_existing();

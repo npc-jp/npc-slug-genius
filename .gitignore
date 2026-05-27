@@ -2,4 +2,9 @@
 dist/
 node_modules/
 tests/results-*.md
+tests/__pycache__/
 *.log
+# 内部作業フォルダ（SVNワーキングコピー・元画像・マーケ草稿）
+_internal/
+assets/_masters/
+marketing/

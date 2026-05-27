@@ -11,11 +11,15 @@ class NPC_Slug_Genius {
 
     const OPTION_PROVIDER          = 'npc_slug_genius_provider';
     const OPTION_API_KEY_CLAUDE    = 'npc_slug_genius_api_key_claude';
+    const OPTION_API_KEY_OPENAI    = 'npc_slug_genius_api_key_openai';
+    const OPTION_API_KEY_GEMINI    = 'npc_slug_genius_api_key_gemini';
     const OPTION_POST_TYPES        = 'npc_slug_genius_post_types';
     const OPTION_INCLUDE_EXISTING  = 'npc_slug_genius_include_existing';
     const OPTION_ACTIVATED_AT      = 'npc_slug_genius_activated_at';
     const META_KEY_MANUAL          = '_npc_slug_genius_manual';
     const META_KEY_AUTO_GENERATED  = '_npc_slug_genius_auto';
+
+    const SUPPORTED_PROVIDERS = array( 'claude', 'openai', 'gemini' );
 
     /** @var NPC_Slug_Genius|null */
     private static $instance = null;
@@ -60,6 +64,8 @@ class NPC_Slug_Genius {
     private function load_dependencies() {
         require_once NPC_SLUG_GENIUS_DIR . 'includes/providers/interface-provider.php';
         require_once NPC_SLUG_GENIUS_DIR . 'includes/providers/class-claude-adapter.php';
+        require_once NPC_SLUG_GENIUS_DIR . 'includes/providers/class-openai-adapter.php';
+        require_once NPC_SLUG_GENIUS_DIR . 'includes/providers/class-gemini-adapter.php';
         require_once NPC_SLUG_GENIUS_DIR . 'includes/class-settings-page.php';
         require_once NPC_SLUG_GENIUS_DIR . 'includes/class-slug-generator.php';
         require_once NPC_SLUG_GENIUS_DIR . 'includes/class-admin-notices.php';
@@ -77,7 +83,7 @@ class NPC_Slug_Genius {
 
     public static function get_active_provider_id() {
         $value = get_option( self::OPTION_PROVIDER, 'claude' );
-        if ( ! in_array( $value, array( 'claude' ), true ) ) {
+        if ( ! in_array( $value, self::SUPPORTED_PROVIDERS, true ) ) {
             return 'claude';
         }
         return $value;
@@ -87,8 +93,13 @@ class NPC_Slug_Genius {
         if ( null === $provider_id ) {
             $provider_id = self::get_active_provider_id();
         }
-        if ( 'claude' === $provider_id ) {
-            return (string) get_option( self::OPTION_API_KEY_CLAUDE, '' );
+        switch ( $provider_id ) {
+            case 'claude':
+                return (string) get_option( self::OPTION_API_KEY_CLAUDE, '' );
+            case 'openai':
+                return (string) get_option( self::OPTION_API_KEY_OPENAI, '' );
+            case 'gemini':
+                return (string) get_option( self::OPTION_API_KEY_GEMINI, '' );
         }
         return '';
     }
@@ -128,8 +139,13 @@ class NPC_Slug_Genius {
 
     public static function get_active_provider() {
         $provider_id = self::get_active_provider_id();
-        if ( 'claude' === $provider_id ) {
-            return new NPC_Slug_Genius_Claude_Adapter( self::get_api_key( 'claude' ) );
+        switch ( $provider_id ) {
+            case 'claude':
+                return new NPC_Slug_Genius_Claude_Adapter( self::get_api_key( 'claude' ) );
+            case 'openai':
+                return new NPC_Slug_Genius_OpenAI_Adapter( self::get_api_key( 'openai' ) );
+            case 'gemini':
+                return new NPC_Slug_Genius_Gemini_Adapter( self::get_api_key( 'gemini' ) );
         }
         return null;
     }

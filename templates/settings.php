@@ -4,7 +4,9 @@
  *
  * Available variables:
  * @var string $provider           Active provider id.
- * @var string $api_key            Claude API key (may be empty).
+ * @var string $api_key_claude     Claude API key (may be empty).
+ * @var string $api_key_openai     OpenAI API key (may be empty).
+ * @var string $api_key_gemini     Gemini API key (may be empty).
  * @var array  $post_types         Currently selected post types.
  * @var array  $all_types          All public post type objects.
  * @var bool   $include_existing   Whether to process posts created before activation.
@@ -16,10 +18,51 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$api_key_display = '';
-if ( '' !== $api_key ) {
-    $api_key_display = str_repeat( '*', max( 0, strlen( $api_key ) - 4 ) ) . substr( $api_key, -4 );
-}
+/**
+ * Build a masked display string for an existing API key.
+ */
+$mask = function ( $key ) {
+    if ( '' === $key ) {
+        return '';
+    }
+    return str_repeat( '*', max( 0, strlen( $key ) - 4 ) ) . substr( $key, -4 );
+};
+
+$providers = array(
+    'claude' => array(
+        'label'         => __( 'Anthropic Claude', 'npc-slug-genius' ),
+        'option'        => NPC_Slug_Genius::OPTION_API_KEY_CLAUDE,
+        'value'         => $api_key_claude,
+        'display'       => $mask( $api_key_claude ),
+        'placeholder'   => 'sk-ant-api03-...',
+        'console_url'   => 'https://console.anthropic.com/settings/keys',
+        'console_label' => 'console.anthropic.com',
+        'delete_field'  => 'npc_slug_genius_delete_api_key_claude',
+        'label_text'    => __( 'Anthropic API Key', 'npc-slug-genius' ),
+    ),
+    'openai' => array(
+        'label'         => __( 'OpenAI ChatGPT', 'npc-slug-genius' ),
+        'option'        => NPC_Slug_Genius::OPTION_API_KEY_OPENAI,
+        'value'         => $api_key_openai,
+        'display'       => $mask( $api_key_openai ),
+        'placeholder'   => 'sk-proj-...',
+        'console_url'   => 'https://platform.openai.com/api-keys',
+        'console_label' => 'platform.openai.com',
+        'delete_field'  => 'npc_slug_genius_delete_api_key_openai',
+        'label_text'    => __( 'OpenAI API Key', 'npc-slug-genius' ),
+    ),
+    'gemini' => array(
+        'label'         => __( 'Google Gemini', 'npc-slug-genius' ),
+        'option'        => NPC_Slug_Genius::OPTION_API_KEY_GEMINI,
+        'value'         => $api_key_gemini,
+        'display'       => $mask( $api_key_gemini ),
+        'placeholder'   => 'AIza...',
+        'console_url'   => 'https://aistudio.google.com/apikey',
+        'console_label' => 'aistudio.google.com',
+        'delete_field'  => 'npc_slug_genius_delete_api_key_gemini',
+        'label_text'    => __( 'Google Gemini API Key', 'npc-slug-genius' ),
+    ),
+);
 ?>
 <div class="wrap">
     <h1><?php echo esc_html__( 'NPC Slug Genius', 'npc-slug-genius' ); ?></h1>
@@ -39,56 +82,58 @@ if ( '' !== $api_key ) {
                     </th>
                     <td>
                         <select id="npc-slug-genius-provider" name="<?php echo esc_attr( NPC_Slug_Genius::OPTION_PROVIDER ); ?>">
-                            <option value="claude" <?php selected( $provider, 'claude' ); ?>><?php echo esc_html__( 'Anthropic Claude', 'npc-slug-genius' ); ?></option>
-                            <option value="openai" disabled><?php echo esc_html__( 'OpenAI ChatGPT (coming in v1.1)', 'npc-slug-genius' ); ?></option>
-                            <option value="gemini" disabled><?php echo esc_html__( 'Google Gemini (coming in v1.2)', 'npc-slug-genius' ); ?></option>
+                            <?php foreach ( $providers as $pid => $p ) : ?>
+                                <option value="<?php echo esc_attr( $pid ); ?>" <?php selected( $provider, $pid ); ?>><?php echo esc_html( $p['label'] ); ?></option>
+                            <?php endforeach; ?>
                         </select>
                         <p class="description">
-                            <?php echo esc_html__( 'Choose which AI provider to use for slug generation. More providers coming soon.', 'npc-slug-genius' ); ?>
+                            <?php echo esc_html__( 'Choose which AI provider to use for slug generation. Only the API key field for the selected provider is shown below.', 'npc-slug-genius' ); ?>
                         </p>
                     </td>
                 </tr>
 
-                <tr>
-                    <th scope="row">
-                        <label for="npc-slug-genius-api-key-claude"><?php echo esc_html__( 'Anthropic API Key', 'npc-slug-genius' ); ?></label>
-                    </th>
-                    <td>
-                        <input
-                            type="password"
-                            id="npc-slug-genius-api-key-claude"
-                            name="<?php echo esc_attr( NPC_Slug_Genius::OPTION_API_KEY_CLAUDE ); ?>"
-                            class="regular-text"
-                            autocomplete="new-password"
-                            placeholder="<?php echo '' === $api_key ? 'sk-ant-api03-...' : esc_attr( $api_key_display ); ?>"
-                        />
-                        <p class="description">
-                            <?php
-                            printf(
-                                /* translators: %s: link to Anthropic Console */
-                                wp_kses(
-                                    /* translators: %s: link to Anthropic Console */
-                                    __( 'Get your API key from %s. Leave this field empty to keep the current saved key unchanged.', 'npc-slug-genius' ),
-                                    array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) )
-                                ),
-                                '<a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">console.anthropic.com</a>'
-                            );
-                            ?>
-                        </p>
-                        <?php if ( '' !== $api_key ) : ?>
-                            <p style="margin-top: 8px;">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        name="npc_slug_genius_delete_api_key_claude"
-                                        value="1"
-                                    />
-                                    <?php echo esc_html__( 'Delete the saved API key on save', 'npc-slug-genius' ); ?>
-                                </label>
+                <?php foreach ( $providers as $pid => $p ) : ?>
+                    <tr class="npc-slug-genius-provider-row" data-provider="<?php echo esc_attr( $pid ); ?>" style="<?php echo $provider === $pid ? '' : 'display:none;'; ?>">
+                        <th scope="row">
+                            <label for="npc-slug-genius-api-key-<?php echo esc_attr( $pid ); ?>"><?php echo esc_html( $p['label_text'] ); ?></label>
+                        </th>
+                        <td>
+                            <input
+                                type="password"
+                                id="npc-slug-genius-api-key-<?php echo esc_attr( $pid ); ?>"
+                                name="<?php echo esc_attr( $p['option'] ); ?>"
+                                class="regular-text"
+                                autocomplete="new-password"
+                                placeholder="<?php echo '' === $p['value'] ? esc_attr( $p['placeholder'] ) : esc_attr( $p['display'] ); ?>"
+                            />
+                            <p class="description">
+                                <?php
+                                printf(
+                                    /* translators: %s: link to provider console */
+                                    wp_kses(
+                                        /* translators: %s: link to provider console */
+                                        __( 'Get your API key from %s. Leave this field empty to keep the current saved key unchanged.', 'npc-slug-genius' ),
+                                        array( 'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) )
+                                    ),
+                                    '<a href="' . esc_url( $p['console_url'] ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $p['console_label'] ) . '</a>'
+                                );
+                                ?>
                             </p>
-                        <?php endif; ?>
-                    </td>
-                </tr>
+                            <?php if ( '' !== $p['value'] ) : ?>
+                                <p style="margin-top: 8px;">
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            name="<?php echo esc_attr( $p['delete_field'] ); ?>"
+                                            value="1"
+                                        />
+                                        <?php echo esc_html__( 'Delete the saved API key on save', 'npc-slug-genius' ); ?>
+                                    </label>
+                                </p>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
 
                 <tr>
                     <th scope="row"><?php echo esc_html__( 'Target Post Types', 'npc-slug-genius' ); ?></th>
@@ -164,3 +209,22 @@ if ( '' !== $api_key ) {
         <li><?php echo esc_html__( 'If the API key is missing or the API call fails, this plugin does nothing - the post saves as normal.', 'npc-slug-genius' ); ?></li>
     </ol>
 </div>
+
+<script>
+(function () {
+    var selectEl = document.getElementById('npc-slug-genius-provider');
+    if (!selectEl) {
+        return;
+    }
+    var rows = document.querySelectorAll('.npc-slug-genius-provider-row');
+    function applyVisibility() {
+        var current = selectEl.value;
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            row.style.display = (row.getAttribute('data-provider') === current) ? '' : 'none';
+        }
+    }
+    selectEl.addEventListener('change', applyVisibility);
+    applyVisibility();
+})();
+</script>

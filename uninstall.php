@@ -11,6 +11,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 delete_option( 'npc_slug_genius_provider' );
 delete_option( 'npc_slug_genius_api_key_claude' );
+delete_option( 'npc_slug_genius_api_key_openai' );
+delete_option( 'npc_slug_genius_api_key_gemini' );
 delete_option( 'npc_slug_genius_post_types' );
 delete_option( 'npc_slug_genius_include_existing' );
 delete_option( 'npc_slug_genius_activated_at' );

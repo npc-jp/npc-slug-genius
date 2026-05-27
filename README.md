@@ -1,7 +1,7 @@
 # NPC Slug Genius
 
-[![Plugin Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/npc-jp/npc-slug-genius)
-[![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-21759b.svg)](https://wordpress.org)
+[![Plugin Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/npc-jp/npc-slug-genius)
+[![WordPress](https://img.shields.io/badge/WordPress-5.0%E2%80%937.0-21759b.svg)](https://wordpress.org)
 [![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4.svg)](https://www.php.net)
 [![License](https://img.shields.io/badge/license-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
@@ -31,13 +31,13 @@ Most "slug translator" plugins translate Japanese to English literally:
 - ✅ Configurable target post types
 - ✅ Safe fallback: API failures don't break post saves
 - ✅ BYOK (Bring Your Own Key): you control the API usage and cost
-- ✅ Provider Adapter architecture: more AI providers coming (OpenAI, Gemini)
+- ✅ **Three AI providers supported** (since v1.1.0): Anthropic Claude, OpenAI ChatGPT, Google Gemini — switch anytime from the settings page
 
 ## Installation
 
-### From WordPress.org (coming soon)
+### From WordPress.org (recommended)
 
-Once approved on WordPress.org, install through `Plugins > Add New > Search "NPC Slug Genius"`.
+Install through `Plugins > Add New > Search "NPC Slug Genius"`, or download from [wordpress.org/plugins/npc-slug-genius](https://wordpress.org/plugins/npc-slug-genius/).
 
 ### From this repository
 
@@ -45,12 +45,15 @@ Once approved on WordPress.org, install through `Plugins > Add New > Search "NPC
 2. Upload to `/wp-content/plugins/npc-slug-genius/`
 3. Activate the plugin
 4. Go to **Settings > NPC Slug Genius**
-5. Paste your [Anthropic API key](https://console.anthropic.com/settings/keys)
+5. Choose your preferred AI provider and paste the API key:
+   - **Anthropic Claude**: get key at [console.anthropic.com](https://console.anthropic.com/settings/keys)
+   - **OpenAI ChatGPT**: get key at [platform.openai.com](https://platform.openai.com/api-keys)
+   - **Google Gemini**: get key at [aistudio.google.com](https://aistudio.google.com/apikey)
 6. Choose target post types (default: posts and pages)
 
 ## How it works
 
-1. When you save a post with a Japanese title, the plugin sends the title to Anthropic Claude API.
+1. When you save a post with a Japanese title, the plugin sends the title to the AI provider you selected (Claude / OpenAI / Gemini).
 2. The AI returns an SEO-optimized English slug based on a curated prompt with 12 carefully-selected Few-shot examples.
 3. The slug is set as the post URL.
 4. If you manually edit the slug afterward, the plugin respects your choice and won't overwrite it.
@@ -58,14 +61,24 @@ Once approved on WordPress.org, install through `Plugins > Add New > Search "NPC
 
 ## Cost
 
-Each slug generation uses Claude Haiku (the fastest, cheapest model), costing roughly **$0.0002 to $0.0005 per post**. For most blogs, monthly cost is well under a dollar.
+All three supported providers offer cost-effective lightweight models:
+
+- **Anthropic Claude (Haiku)**: roughly $0.0002 – $0.0005 per post
+- **OpenAI ChatGPT (gpt-4o-mini)**: similar price range
+- **Google Gemini (2.0 Flash)**: free tier available, then cheap pay-as-you-go
+
+For most blogs, monthly cost stays well under a dollar regardless of provider.
+
+## Release history
+
+- **v1.1.1** (2026-05-27): Tested with WordPress 7.0
+- **v1.1.0** (2026-05-27): Added OpenAI ChatGPT and Google Gemini providers
+- **v1.0.0** (2026-05-27): Initial WordPress.org release (Anthropic Claude only)
 
 ## Roadmap
 
-- **v1.0** (current): Anthropic Claude support
-- **v1.1** (planned): Add OpenAI ChatGPT support + OpenAI-compatible endpoints (DeepSeek, Mistral, Ollama)
-- **v1.2** (planned): Add Google Gemini support
-- **v1.3** (planned): Gutenberg sidebar preview + bulk re-generate for existing posts
+- v1.2 (planned): Gutenberg sidebar preview + bulk re-generate for existing posts
+- v1.3 (planned): OpenAI-compatible endpoint support (DeepSeek, Mistral, Ollama)
 
 ## Architecture
 
@@ -83,10 +96,13 @@ The differentiation is not in the code — it's in the **Few-shot example set**.
 ## Development
 
 ```bash
-# Run prompt quality tests against Claude API
+# Run prompt quality tests against each provider
 ANTHROPIC_API_KEY=sk-ant-... python3 tests/test_prompt_v1.py
+OPENAI_API_KEY=sk-proj-... python3 tests/test_prompt_v1_openai.py
+GEMINI_API_KEY=AIza...     python3 tests/test_prompt_v1_gemini.py
 
-# Pass threshold: 25/30 examples produce acceptable slugs
+# Pass threshold: 25/30 examples produce acceptable slugs.
+# v1.1.0 verified: Claude 25+/30, OpenAI 27/30, Gemini 27/30.
 ```
 
 ## Privacy
