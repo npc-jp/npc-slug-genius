@@ -15,18 +15,16 @@ rsync -a --exclude .svn --exclude .git --exclude tests --exclude _internal --exc
 cp "$HERE/sg-test-runner.php" "$WORK/mu/"
 MODE=run
 if [ -n "${SG_TEST_LIVE:-}" ]; then
-  # 本物の API を呼ぶ回: ~/.env のキーを一時フォルダの mu-plugin にだけ書く（終わったら作業フォルダごと消える）
+  # 本物の API を呼ぶ回: キーを scripts/lib/secret.py（環境変数→キーチェーン→~/.env の順）で取り、
+  # 一時フォルダの mu-plugin にだけ書く（終わったら作業フォルダごと消える。2026-10-20 キーチェーン移行に合わせた）
   MODE=live
   python3 - "$WORK/mu/sg-live-keys.php" <<'PY'
 import os, sys
-env = {}
-for line in open(os.path.expanduser("~/.env")):
-    line = line.strip()
-    if "=" in line and not line.startswith("#"):
-        k, v = line.replace("export ", "", 1).split("=", 1)
-        env[k] = v.strip().strip('"').strip("'")
+sys.path.insert(0, os.path.expanduser("~/npc-team/scripts/lib"))
+from secret import get
 pairs = {"claude": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY", "gemini": "GEMINI_API_KEY"}
-body = ", ".join(f"'{p}' => '{env[k]}'" for p, k in pairs.items() if env.get(k))
+keys = {p: (get(k) or "") for p, k in pairs.items()}
+body = ", ".join(f"'{p}' => '{v}'" for p, v in keys.items() if v)
 open(sys.argv[1], "w").write("<?php\nfunction sg_t_live_keys() { return array( " + body + " ); }\n")
 os.chmod(sys.argv[1], 0o600)
 PY
