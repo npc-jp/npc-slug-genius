@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class NPC_Slug_Genius_Gemini_Adapter implements NPC_Slug_Genius_Provider {
 
     const API_URL_TEMPLATE = 'https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent';
-    const MODEL            = 'gemini-2.5-flash';
+    const MODEL            = 'gemini-3.5-flash-lite';
     const MAX_TOKENS       = 64;
     const TEMP             = 0.3;
 
@@ -65,8 +65,9 @@ class NPC_Slug_Genius_Gemini_Adapter implements NPC_Slug_Genius_Provider {
             'generationConfig' => array(
                 'temperature'     => self::TEMP,
                 'maxOutputTokens' => self::MAX_TOKENS,
+                // gemini-3.5-flash-lite は thinkingBudget: 0 を 400 で断る（2026-10-19 実測）。思考は minimal（ほぼ考えない）にする
                 'thinkingConfig'  => array(
-                    'thinkingBudget' => 0,
+                    'thinkingLevel' => 'minimal',
                 ),
             ),
         );
@@ -95,6 +96,12 @@ class NPC_Slug_Genius_Gemini_Adapter implements NPC_Slug_Genius_Provider {
         if ( 200 !== (int) $status ) {
             $message = isset( $decoded['error']['message'] ) ? $decoded['error']['message'] : ( 'HTTP ' . $status );
             return new WP_Error( 'api_error', $message );
+        }
+
+        // 最後まで書き終えた返事だけを使う。出力の上限で途中まで（例 "about-u"）の返事はスラッグにしない
+        $finish = isset( $decoded['candidates'][0]['finishReason'] ) ? (string) $decoded['candidates'][0]['finishReason'] : '';
+        if ( 'STOP' !== $finish ) {
+            return new WP_Error( 'incomplete_response', __( 'Google Gemini API response did not finish normally.', 'npc-slug-genius' ), array( 'finish_reason' => $finish ) );
         }
 
         $text = '';

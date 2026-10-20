@@ -10,9 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 class NPC_Slug_Genius_Claude_Adapter implements NPC_Slug_Genius_Provider {
 
     const API_URL    = 'https://api.anthropic.com/v1/messages';
-    const MODEL      = 'claude-haiku-4-5-20251001';
+    const MODEL      = 'claude-haiku-5-5';
     const MAX_TOKENS = 64;
-    const TEMP       = 0.3;
 
     /** @var string */
     private $api_key;
@@ -49,11 +48,14 @@ class NPC_Slug_Genius_Claude_Adapter implements NPC_Slug_Genius_Provider {
         }
 
         $body = array(
-            'model'       => self::MODEL,
-            'max_tokens'  => self::MAX_TOKENS,
-            'temperature' => self::TEMP,
-            'system'      => $system_prompt,
-            'messages'    => array(
+            // Haiku 5.5 は temperature: 0.3 を HTTP 400 で断った（2026-10-19 実測）ので送らない。思考は切って、出力の上限を返事だけに使う
+            'model'      => self::MODEL,
+            'max_tokens' => self::MAX_TOKENS,
+            'thinking'   => array(
+                'type' => 'disabled',
+            ),
+            'system'     => $system_prompt,
+            'messages'   => array(
                 array(
                     'role'    => 'user',
                     'content' => 'Title: ' . $title,
@@ -84,6 +86,12 @@ class NPC_Slug_Genius_Claude_Adapter implements NPC_Slug_Genius_Provider {
         if ( 200 !== (int) $status ) {
             $message = isset( $decoded['error']['message'] ) ? $decoded['error']['message'] : ( 'HTTP ' . $status );
             return new WP_Error( 'api_error', $message );
+        }
+
+        // 最後まで書き終えた返事だけを使う。出力の上限で途中まで（stop_reason "max_tokens"）の返事はスラッグにしない
+        $stop = isset( $decoded['stop_reason'] ) ? (string) $decoded['stop_reason'] : '';
+        if ( 'end_turn' !== $stop ) {
+            return new WP_Error( 'incomplete_response', __( 'Claude API response did not finish normally.', 'npc-slug-genius' ), array( 'stop_reason' => $stop ) );
         }
 
         $text = '';

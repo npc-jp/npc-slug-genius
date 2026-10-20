@@ -42,12 +42,23 @@ class NPC_Slug_Genius_Slug_Generator {
         }
 
         $new_slug = sanitize_title( $result );
-        if ( '' === $new_slug || $new_slug === $post->post_name ) {
+        if ( '' === $new_slug ) {
+            return;
+        }
+        // 下書き・レビュー待ちには WordPress が重複よけの番号を付けないので、公開した扱いで先に番号を付ける。
+        // そのまま書くと公開済みの投稿と同じスラッグになり、公開済みのほうが次の保存で "-2" に変わる（固定ページは旧 URL が切れる）
+        $new_slug = wp_unique_post_slug( $new_slug, $post_id, 'publish', $post->post_type, $post->post_parent );
+        if ( $new_slug === $post->post_name ) {
             return;
         }
 
-        $this->update_post_slug( $post_id, $new_slug );
-        update_post_meta( $post_id, NPC_Slug_Genius::META_KEY_AUTO_GENERATED, $new_slug );
+        // 更新に成功したときだけ記録する。記録するのは WordPress が実際に保存したスラッグ
+        // （同じスラッグがあると "-2" が付く）。ずれた値を記録すると、次の保存で「手で書き換えた」と誤ってロックする
+        $saved_slug = $this->update_post_slug( $post_id, $new_slug );
+        if ( '' === $saved_slug ) {
+            return;
+        }
+        update_post_meta( $post_id, NPC_Slug_Genius::META_KEY_AUTO_GENERATED, $saved_slug );
     }
 
     private function should_process( $post_id, $post ) {
@@ -85,8 +96,7 @@ class NPC_Slug_Genius_Slug_Generator {
             return true;
         }
         // Use the previously stored auto-generated postmeta as an override:
-        // if this plugin already generated a slug for this post in a past save,
-        // it's safe to keep processing (e.g. title edits should regenerate).
+        // posts that this plugin already generated a slug for are not skipped by the activation-time check.
         $previous_auto = get_post_meta( $post->ID, NPC_Slug_Genius::META_KEY_AUTO_GENERATED, true );
         if ( '' !== $previous_auto ) {
             return true;
@@ -108,7 +118,9 @@ class NPC_Slug_Genius_Slug_Generator {
     /**
      * Detect manual slug edit by user. Strategy:
      * - If postmeta META_KEY_MANUAL is already true -> already locked.
-     * - Else if current post_name does not match the previously stored auto-generated slug -> user edited it manually.
+     * - Else if current post_name does not match the previously stored auto-generated slug -> user edited it manually,
+     *   unless it is exactly the slug that WordPress makes from the stored slug on publishing (e.g. "contact-2").
+     * - An empty post_name does not create a new manual lock.
      */
     private function is_manually_set( $post_id, $post ) {
         $locked = get_post_meta( $post_id, NPC_Slug_Genius::META_KEY_MANUAL, true );
@@ -118,6 +130,15 @@ class NPC_Slug_Genius_Slug_Generator {
 
         $previous_auto = get_post_meta( $post_id, NPC_Slug_Genius::META_KEY_AUTO_GENERATED, true );
         if ( '' !== $previous_auto && $previous_auto !== $post->post_name && '' !== $post->post_name ) {
+            // WordPress が記録したスラッグに重複よけの番号を付けたもの（例 "contact" → "contact-2"）なら、手の書き換えではない。
+            // WordPress と同じ計算をして見分け、記録を保存されたスラッグに合わせる。リクエストをまたぐ値は持たない。
+            // 状態は「公開した扱い」で計算する: 下書きは公開した時に番号が付き、クイック編集は下書きでも公開した扱いで
+            // 先に番号を付ける（wp_ajax_inline_save）。公開済み・予約・非公開では、状態によらず計算は同じ
+            $numbered = wp_unique_post_slug( $previous_auto, $post_id, 'publish', $post->post_type, $post->post_parent );
+            if ( $numbered === $post->post_name ) {
+                update_post_meta( $post_id, NPC_Slug_Genius::META_KEY_AUTO_GENERATED, $post->post_name );
+                return false;
+            }
             // User modified the auto-generated slug. Lock it from now on.
             update_post_meta( $post_id, NPC_Slug_Genius::META_KEY_MANUAL, '1' );
             return true;
@@ -128,8 +149,7 @@ class NPC_Slug_Genius_Slug_Generator {
 
     /**
      * Whether the current post_name needs AI generation.
-     * Yes if the slug contains non-ASCII (Japanese) characters or is empty.
-     * Yes also if it already matches a previously stored auto-generated slug (regenerate not needed but safe).
+     * Yes if the slug is empty, contains non-ASCII (Japanese) characters, or is percent-encoded.
      */
     private function needs_generation( $post ) {
         $slug = (string) $post->post_name;
@@ -149,15 +169,24 @@ class NPC_Slug_Genius_Slug_Generator {
 
     /**
      * Update post_name with infinite-loop guard.
+     *
+     * @return string 保存されたスラッグ。更新に失敗したときは空文字。
      */
     private function update_post_slug( $post_id, $new_slug ) {
         remove_action( 'save_post', array( $this, 'on_save_post' ), 20 );
-        wp_update_post(
+        $result = wp_update_post(
             array(
                 'ID'        => $post_id,
                 'post_name' => $new_slug,
-            )
+            ),
+            true
         );
         add_action( 'save_post', array( $this, 'on_save_post' ), 20, 3 );
+
+        if ( is_wp_error( $result ) || ! $result ) {
+            return '';
+        }
+        $saved = get_post( $post_id );
+        return $saved instanceof WP_Post ? (string) $saved->post_name : '';
     }
 }

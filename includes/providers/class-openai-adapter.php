@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class NPC_Slug_Genius_OpenAI_Adapter implements NPC_Slug_Genius_Provider {
 
     const API_URL    = 'https://api.openai.com/v1/chat/completions';
-    const MODEL      = 'gpt-4o-mini';
+    const MODEL      = 'gpt-6-luna';
     const MAX_TOKENS = 64;
     const TEMP       = 0.3;
 
@@ -49,10 +49,12 @@ class NPC_Slug_Genius_OpenAI_Adapter implements NPC_Slug_Genius_Provider {
         }
 
         $body = array(
-            'model'       => self::MODEL,
-            'max_tokens'  => self::MAX_TOKENS,
-            'temperature' => self::TEMP,
-            'messages'    => array(
+            // gpt-6-luna は max_tokens を 400 で断る（2026-10-19 実測）。temperature は reasoning_effort が none のときだけ使える
+            'model'                 => self::MODEL,
+            'max_completion_tokens' => self::MAX_TOKENS,
+            'reasoning_effort'      => 'none',
+            'temperature'           => self::TEMP,
+            'messages'              => array(
                 array(
                     'role'    => 'system',
                     'content' => $system_prompt,
@@ -86,6 +88,12 @@ class NPC_Slug_Genius_OpenAI_Adapter implements NPC_Slug_Genius_Provider {
         if ( 200 !== (int) $status ) {
             $message = isset( $decoded['error']['message'] ) ? $decoded['error']['message'] : ( 'HTTP ' . $status );
             return new WP_Error( 'api_error', $message );
+        }
+
+        // 最後まで書き終えた返事だけを使う。出力の上限で途中まで（finish_reason "length"）の返事はスラッグにしない
+        $finish = isset( $decoded['choices'][0]['finish_reason'] ) ? (string) $decoded['choices'][0]['finish_reason'] : '';
+        if ( 'stop' !== $finish ) {
+            return new WP_Error( 'incomplete_response', __( 'OpenAI API response did not finish normally.', 'npc-slug-genius' ), array( 'finish_reason' => $finish ) );
         }
 
         $text = '';
