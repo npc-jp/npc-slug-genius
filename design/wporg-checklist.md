@@ -9,8 +9,8 @@
 ## 0. 前提
 
 このチェックリストは以下の lessons から構築:
-- `~/npc-team/.claude/rules/lessons/wordpress.md` の [2026-05-05] WP.org審査保留対応の総ざらいチェックリスト
-- `~/npc-team/.claude/rules/lessons/wordpress.md` の [2026-05-06] WP.org Pended再提出フロー
+- `~/npc-team/lessons/wordpress.md` の [2026-05-05] WP.org審査保留対応の総ざらいチェックリスト
+- `~/npc-team/lessons/wordpress.md` の [2026-05-06] WP.org Pended再提出フロー
 - メモリ `reference_wporg-plugin-submission.md`
 - メモリ `project_npc-acf-manual-generator.md`
 

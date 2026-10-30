@@ -6,7 +6,7 @@ system-prompt-v1.txt を Gemini 2.0 Flash に投げて、30本のテストケー
 合格基準 25/30 を満たすかを測定する。
 
 使い方:
-  export GEMINI_API_KEY=AIza...
+  export GEMINI_API_KEY=$(python3 ~/npc-team/scripts/lib/secret.py get GEMINI_API_KEY)   # 値は macOS キーチェーン（2026-10-20〜）
   python3 tests/test_prompt_v1_gemini.py
 
 オプション:

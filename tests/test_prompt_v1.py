@@ -8,7 +8,7 @@ system-prompt-v1.txt を Claude Haiku に投げて、Few-shot例示30本がど�
 合格基準: 30本中25本以上が許容範囲。
 
 使い方:
-  export ANTHROPIC_API_KEY=sk-ant-...
+  export ANTHROPIC_API_KEY=$(python3 ~/npc-team/scripts/lib/secret.py get ANTHROPIC_API_KEY)   # 値は macOS キーチェーン（2026-10-20〜）
   python3 tests/test_prompt_v1.py
 
 オプション:
